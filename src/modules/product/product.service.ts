@@ -22,25 +22,105 @@ const createProductsIntoDB = async (product: TProduct) => {
 //   }
 // };
 
-const getAllProductsFromDB = async (text = null, filters = {}, sort = {}) => {
-  let query = {};
+// const getAllProductsFromDB = async (text = null, filters = {}, sort = {}) => {
+//   let query = {};
 
-  if (text !== null) {
-    query = {
-      $or: [
-        { name: { $regex: text, $options: "i" } },
-        { category: { $regex: text, $options: "i" } },
-      ],
-    };
+//   if (text !== null) {
+//     query = {
+//       $or: [
+//         { name: { $regex: text, $options: "i" } },
+//         { category: { $regex: text, $options: "i" } },
+//       ],
+//     };
+//   }
+
+//   // Merge filters into the query
+//   query = { ...query, ...filters };
+
+//   const result = await ProductsModel.find(query).sort(sort);
+
+//   return result;
+// };
+
+// 11 aug try,
+// const getAllProductsFromDB = async (text : string | null = null, filters = {}, sort = {}) => {
+//   let query = {};
+
+//   if (text) {
+//     query = {
+//       $or: [
+//         { name: { $regex: text, $options: "i" } },
+//         { category: { $regex: text, $options: "i" } },
+//       ],
+//     };
+//   }
+
+//   // Merge filters into the query
+//   query = { ...query, ...filters };
+
+//   // Fetch products with applied filters and sorting
+//   const result = await ProductsModel.find(query).sort(sort);
+
+//   return result;
+// };
+
+//  ok ok  ok =====================
+
+interface ProductQuery {
+  name?: { $regex: string; $options: "i" };
+  category?: { $regex: string; $options: "i" };
+  price?: { $gte: number; $lte: number };
+  [key: string]: any ; // Allow additional properties
+}
+
+interface Filters {
+  category?: string;
+  [key: string]: any; // Allow additional filters
+}
+
+const getAllProductsFromDB = async (
+  text: string | null = null,
+  filters: Filters = {},
+  sort: { [key: string]: 1 | -1 } = {},
+  minPrice: number = 0,
+  maxPrice: number = 3000
+) => {
+  const query: ProductQuery = {};
+
+  // Add text search filter
+  if (text) {
+    query.$or = [
+      { name: { $regex: text, $options: "i" } },
+      { category: { $regex: text, $options: "i" } },
+    ];
   }
 
-  // Merge filters into the query
-  query = { ...query, ...filters };
+  // Add price range filter
+  if (minPrice >= 0 && maxPrice >= 0) {
+    query.price = { $gte: minPrice, $lte: maxPrice };
+  }
 
+  // Add category filter
+  if (filters.category) {
+    query.category = { $regex: filters.category, $options: "i" };
+  }
+
+  // Add additional filters
+  for (const key in filters) {
+    if (key !== "category") {
+      query[key] = filters[key];
+    }
+  }
+
+  // Fetch products with applied filters and sorting
   const result = await ProductsModel.find(query).sort(sort);
 
   return result;
 };
+
+
+
+
 
 const getSingleProductsFromDB = async (_id: string) => {
   const result = await ProductsModel.findOne({ _id });
