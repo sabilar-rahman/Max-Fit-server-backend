@@ -7,7 +7,7 @@ export type TProduct = {
     category: string;
     stock:number;
     _id?: string;
-    quantity: number
+    quantity?: number;
 };
 
 

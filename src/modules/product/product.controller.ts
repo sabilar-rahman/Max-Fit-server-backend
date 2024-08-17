@@ -188,6 +188,78 @@ const createProduct = async (req: Request, res: Response) => {
 // };
 
 
+// const getAllProducts = async (req: Request, res: Response) => {
+//   try {
+//     const {
+//       searchTerm,
+//       category,
+//       sortByPrice,
+//       minPrice,
+//       maxPrice,
+//     }: ProductQueryParams = req.query;
+
+//     // Valid categories
+//     const validCategories = [
+//       "Leg Extension machine",
+//       "Chest press",
+//       "Lat pulldown",
+//       "Treadmill",
+//       "Dumbbells",
+//       "Rowing machine",
+//       "StairMaster",
+//     ];
+
+//     // Convert minPrice and maxPrice to numbers, default to reasonable ranges if not provided
+//     const parsedMinPrice = minPrice ? parseFloat(minPrice) : 0;
+//     const parsedMaxPrice = maxPrice ? parseFloat(maxPrice) : 3000;
+
+//     // Prepare filters
+//     const filters: Record<string, any> = {};
+
+//     if (category && validCategories.includes(category)) {
+//       filters.category = category;
+//     }
+
+//     if (!isNaN(parsedMinPrice) && !isNaN(parsedMaxPrice)) {
+//       filters.price = { $gte: parsedMinPrice, $lte: parsedMaxPrice };
+//     }
+
+//     // Prepare sort object
+//     const sort = sortByPrice ? { price: sortByPrice === "asc" ? 1 : -1 } : {};
+
+//     // Fetch products with applied filters and sorting
+//     const products = await ProductService.getAllProductsFromDB(
+//       searchTerm || null,
+//       filters,
+//       sort,
+//       parsedMinPrice,
+//       parsedMaxPrice
+//     );
+
+//     if (products.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "No products found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Products fetched successfully",
+//       data: products,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching products:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal server error",
+//     });
+//   }
+// };
+
+//  export default getAllProducts;
+
+
 const getAllProducts = async (req: Request, res: Response) => {
   try {
     const {
@@ -225,7 +297,7 @@ const getAllProducts = async (req: Request, res: Response) => {
     }
 
     // Prepare sort object
-    const sort = sortByPrice ? { price: sortByPrice === "asc" ? 1 : -1 } : {};
+    const sort: { [key: string]: 1 | -1 } = sortByPrice ? { price: sortByPrice === "asc" ? 1 : -1 } : {};
 
     // Fetch products with applied filters and sorting
     const products = await ProductService.getAllProductsFromDB(
@@ -257,7 +329,6 @@ const getAllProducts = async (req: Request, res: Response) => {
   }
 };
 
-export default getAllProducts;
 
 
 

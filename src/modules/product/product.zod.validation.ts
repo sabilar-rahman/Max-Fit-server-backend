@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // Define the TVariant schema
 // const TVariantValidationSchema = z.object({
@@ -22,6 +22,7 @@ const TProductValidationSchema = z.object({
   image: z.string(),
   category: z.string({ required_error: "Product category is required" }),
   stock: z.number(),
+  quantity: z.number().optional(),
 });
 
 export default TProductValidationSchema;

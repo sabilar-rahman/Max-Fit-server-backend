@@ -73,7 +73,7 @@ const createOrdersIntoDB = async (orders: IOrder) => {
   // Process each item in the cart
   for (const cartItem of orders.cart) {
     await ProductsModel.findByIdAndUpdate(cartItem._id, {
-      $inc: { stock: -cartItem.quantity }
+      $inc: { stock: -cartItem.quantity! }
     }, { new: true }); // Use $inc to decrement the stock
   }
 

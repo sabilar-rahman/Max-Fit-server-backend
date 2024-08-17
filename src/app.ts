@@ -4,6 +4,15 @@ import cors from "cors";
 import { OrderRoutes } from "./modules/order/order.route";
 const app = express();
 
+// const DeployWebCorsOption = {
+//   origin: 'http://localhost:5000/api',
+//   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+//   allowedHeaders: ['Content-Type', 'Authorization'],
+// }
+
+
+
+
 // Parser start---------
 app.use(express.json());
 app.use(cors());
